@@ -3,50 +3,57 @@ var twitterStream = angular.module('myApp', ['chart.js'])
 twitterStream.controller("mainCtrl", ['$scope', 'socket',
 function ($scope, socket) {
   //chart labels
-  $scope.labels = ["iPhone", "iPad", "Android", "Web Client", "Other"];
+  $scope.labels = ["love", "life", "best", "free", "happy"];
   //chart colors
-  $scope.colors = ['#6c6a6c','#000000','#7FFD1F','#EC872A', '#9527C2'];
+  $scope.colors = ['#9CF6F6','#F56960','#F3C98B','#C46D5E', '#9527C2', '#A1869E'];
   //intial data values
-  $scope.trumpData = [0,0,0,0,0];
-  $scope.sandersData = [0,0,0,0,0];
+  $scope.Data = [0,0,0,0,0,0];
 
   socket.on('newTweet', function (tweet) {
     $scope.tweet = tweet.text
     $scope.user = tweet.user.screen_name
     //parse source from payload
-    var source = tweet.source.split('>')[1].split('<')[0].split(' ')[2]
+    var text = tweet.text;
+    text = text.split(' ');
+
+    if (text.indexOf('love') !== -1) {
+      text = 'love';
+    }
+    if (text.indexOf('best') !== -1) {
+      text = 'best';
+    }
+    if (text.indexOf('free') !== -1) {
+      text = 'free';
+    }
+    if (text.indexOf('happy') !== -1) {
+      text = 'happy';
+    }
+    if (text.indexOf('life') !== -1) {
+      text = 'life';
+    }
+
+    console.log(text);
+
     //all hashtags in the tweet
     var hashtags = tweet.entities.hashtags.map(function(el){
       return el.text.toLowerCase()
     })
 
     //check source and increment for #trump tweets
-    if (hashtags.indexOf('trump') !== -1){
-      switch (source) {
-        case 'iPhone': $scope.trumpData[0]++
+    if (hashtags.indexOf('wednesdaywisdom') !== -1){
+      switch (text) {
+        case 'love': $scope.Data[0]++
         break;
-        case 'iPad': $scope.trumpData[1]++
+        case 'life': $scope.Data[1]++
         break;
-        case 'Android': $scope.trumpData[2]++
+        case 'best': $scope.Data[2]++
         break;
-        case 'Web': $scope.trumpData[3]++
+        case 'free': $scope.Data[3]++
         break;
-        default: $scope.trumpData[4]++
-      }
-    }
-
-    //check source and increment for #feelthebern tweets
-    else if (hashtags.indexOf('feelthebern') !== -1) {
-      switch (source) {
-        case 'iPhone': $scope.sandersData[0]++
+        case 'happy': $scope.Data[4]++
         break;
-        case 'iPad': $scope.sandersData[1]++
+        default: console.log('whatever');
         break;
-        case 'Android': $scope.sandersData[2]++
-        break;
-        case 'Web': $scope.sandersData[3]++
-        break;
-        default: $scope.sandersData[4]++
       }
     }
   });
